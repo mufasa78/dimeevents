@@ -1,10 +1,8 @@
-import { 
-  contactSubmissions, 
-  subscribers, 
-  type ContactSubmission, 
-  type InsertContactSubmission, 
-  type Subscriber, 
-  type InsertSubscriber 
+import {
+  type ContactSubmission,
+  type InsertContactSubmission,
+  type Subscriber,
+  type InsertSubscriber
 } from "@shared/schema";
 
 export interface IStorage {
@@ -31,8 +29,13 @@ export class MemStorage implements IStorage {
     const id = this.contactIdCounter++;
     const now = new Date();
     const contactSubmission: ContactSubmission = {
-      ...submission,
       id,
+      name: submission.name,
+      email: submission.email,
+      phone: submission.phone || null,
+      eventType: submission.eventType || null,
+      eventDate: submission.eventDate || null,
+      message: submission.message,
       createdAt: now
     };
     this.contactSubmissions.set(id, contactSubmission);
@@ -48,11 +51,11 @@ export class MemStorage implements IStorage {
     const existingSubscriber = Array.from(this.subscribers.values()).find(
       sub => sub.email === subscriber.email
     );
-    
+
     if (existingSubscriber) {
       return existingSubscriber;
     }
-    
+
     const id = this.subscriberIdCounter++;
     const now = new Date();
     const newSubscriber: Subscriber = {
@@ -60,7 +63,7 @@ export class MemStorage implements IStorage {
       id,
       createdAt: now
     };
-    
+
     this.subscribers.set(id, newSubscriber);
     return newSubscriber;
   }
